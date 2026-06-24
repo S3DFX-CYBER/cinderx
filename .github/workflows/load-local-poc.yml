@@ -1,0 +1,30 @@
+name: LOAD_LOCAL Research PoC
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+
+      - name: Install build tools
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install build
+
+      - name: Build CinderX
+        run: |
+          python -m build
+
+      - name: Run LOAD_LOCAL PoC
+        run: |
+          python TestScripts/load_local_poc.py

@@ -18,7 +18,8 @@ jobs:
         uses: astral-sh/setup-uv@v7
 
       - name: Create venv
-        run: uv venv
+        # Forces uv to use the 3.12 version set up by the runner
+        run: uv venv --python "$pythonLocation/bin/python"
 
       - name: Install pytest
         run: uv pip install pytest

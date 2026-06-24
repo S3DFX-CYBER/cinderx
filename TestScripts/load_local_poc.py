@@ -1,27 +1,47 @@
-import dis
-import types
+import pathlib
+import re
 
 print("=" * 60)
-print("LOAD_LOCAL RESEARCH POC")
+print("CinderX LOAD_LOCAL Research")
 print("=" * 60)
 
-# Placeholder function until we wire in actual static compilation
-def testfunc():
-    i = 0
-    while i < 100:
-        i += 1
-    return i
+root = pathlib.Path(".")
 
-print("\n[+] Bytecode")
-dis.dis(testfunc)
+targets = []
 
-print("\n[+] Constants")
-for idx, c in enumerate(testfunc.__code__.co_consts):
-    print(f"{idx}: {repr(c)}")
+for path in root.rglob("*.py"):
+    try:
+        text = path.read_text(errors="ignore")
+    except Exception:
+        continue
 
-print("\n[+] Code Object Info")
-print("co_argcount =", testfunc.__code__.co_argcount)
-print("co_nlocals =", testfunc.__code__.co_nlocals)
-print("co_stacksize =", testfunc.__code__.co_stacksize)
+    if "LOAD_LOCAL" in text:
+        targets.append(path)
 
-print("\n[+] Validation Complete")
+print(f"\n[+] Found {len(targets)} files referencing LOAD_LOCAL\n")
+
+for p in sorted(targets):
+    print(p)
+
+print("\n[+] Searching test cases")
+
+for p in targets:
+    if "test_" in p.name:
+        print(f"\n==== {p} ====")
+
+        try:
+            lines = p.read_text(errors="ignore").splitlines()
+        except Exception:
+            continue
+
+        for idx, line in enumerate(lines):
+            if "LOAD_LOCAL" in line:
+                start = max(0, idx - 5)
+                end = min(len(lines), idx + 10)
+
+                for l in lines[start:end]:
+                    print(l)
+
+                print("-" * 50)
+
+print("\n[+] Complete")

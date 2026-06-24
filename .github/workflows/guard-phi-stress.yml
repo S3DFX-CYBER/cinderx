@@ -10,20 +10,22 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      # 1. Target Python 3.14 to match CinderX's core architecture requirements
       - uses: actions/setup-python@v6
         with:
-          python-version: "3.12"
+          python-version: "3.14"
 
       - name: Install uv
         uses: astral-sh/setup-uv@v7
 
+      # 2. Pin the virtual environment to the 3.14 runtime built by the runner
       - name: Create venv
-        # Forces uv to use the 3.12 version set up by the runner
         run: uv venv --python "$pythonLocation/bin/python"
 
       - name: Install pytest
         run: uv pip install pytest
 
+      # 3. Execute the static compiler tests under Python 3.14
       - name: Run guard phi tests
         run: |
           uv run pytest \

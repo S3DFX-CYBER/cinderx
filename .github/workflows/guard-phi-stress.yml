@@ -1,0 +1,21 @@
+name: Guard Phi Stress
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+
+      - name: Run stress test
+        run: |
+          python TestScripts/guard_phi_stress.py
